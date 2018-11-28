@@ -630,28 +630,33 @@ start()
 	// --------------------------------------------------------------------------
 
 	// Wait for initial position ned
-	while ( not ( current_messages.time_stamps.local_position_ned &&
-				  current_messages.time_stamps.attitude            )  )
-	{
-		if ( time_to_exit )
-			return;
-		usleep(500000);
-	}
+	// while ( not ( current_messages.time_stamps.local_position_ned &&
+	//               current_messages.time_stamps.attitude            )  )
+	// {
+	//     if ( time_to_exit )
+	//         return;
+	//     usleep(500000);
+	// }
 
-	// copy initial position ned
-	Mavlink_Messages local_data = current_messages;
-	initial_position.x        = local_data.local_position_ned.x;
-	initial_position.y        = local_data.local_position_ned.y;
-	initial_position.z        = local_data.local_position_ned.z;
-	initial_position.vx       = local_data.local_position_ned.vx;
-	initial_position.vy       = local_data.local_position_ned.vy;
-	initial_position.vz       = local_data.local_position_ned.vz;
-	initial_position.yaw      = local_data.attitude.yaw;
-	initial_position.yaw_rate = local_data.attitude.yawspeed;
+    while (true)
+    {
+        // copy initial position ned
+        Mavlink_Messages local_data = current_messages;
+        position.x        = local_data.local_position_ned.x;
+        position.y        = local_data.local_position_ned.y;
+        position.z        = local_data.local_position_ned.z;
+        position.vx       = local_data.local_position_ned.vx;
+        position.vy       = local_data.local_position_ned.vy;
+        position.vz       = local_data.local_position_ned.vz;
+        position.yaw      = local_data.attitude.yaw;
+        position.yaw_rate = local_data.attitude.yawspeed;
 
-	printf("INITIAL POSITION XYZ = [ %.4f , %.4f , %.4f ] \n", initial_position.x, initial_position.y, initial_position.z);
-	printf("INITIAL POSITION YAW = %.4f \n", initial_position.yaw);
-	printf("\n");
+        printf("YAW = %.4f \n", position.yaw);
+        // printf("\n");
+        
+        if ( time_to_exit ) return;
+        usleep(10);
+    }
 
 	// we need this before starting the write thread
 
@@ -659,17 +664,17 @@ start()
 	// --------------------------------------------------------------------------
 	//   WRITE THREAD
 	// --------------------------------------------------------------------------
-	printf("START WRITE THREAD \n");
-
-	result = pthread_create( &write_tid, NULL, &start_autopilot_interface_write_thread, this );
-	if ( result ) throw result;
-
-	// wait for it to be started
-	while ( not writing_status )
-		usleep(100000); // 10Hz
-
-	// now we're streaming setpoint commands
-	printf("\n");
+	// printf("START WRITE THREAD \n");
+    //
+	// result = pthread_create( &write_tid, NULL, &start_autopilot_interface_write_thread, this );
+	// if ( result ) throw result;
+    //
+	// // wait for it to be started
+	// while ( not writing_status )
+	//     usleep(100000); // 10Hz
+    //
+	// // now we're streaming setpoint commands
+	// printf("\n");
 
 
 	// Done!

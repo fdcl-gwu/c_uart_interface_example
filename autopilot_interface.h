@@ -255,7 +255,7 @@ public:
 	int companion_id;
 
 	Mavlink_Messages current_messages;
-	mavlink_set_position_target_local_ned_t initial_position;
+	mavlink_set_position_target_local_ned_t initial_position, position;
 
 	void update_setpoint(mavlink_set_position_target_local_ned_t setpoint);
 	void read_messages();
